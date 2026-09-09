@@ -29,4 +29,109 @@ This repo solves that by offering **simple, well-explained patterns** anyone can
 ---
 
 ## 📂 Repository Structure
+awesome-agentic-patterns/
+│
+├── memory/
+│   ├── supabase_pgvector/
+│   │   ├── README.md
+│   │   └── example.py
+│   ├── redis_memory/
+│   │   ├── README.md
+│   │   └── example.py
+│   ├── chroma_memory/
+│   │   ├── README.md
+│   │   └── example.py
+│   └── episodic_memory/
+│       ├── README.md
+│       └── example.py
+│
+├── workflows/
+│   ├── langgraph_state_machine/
+│   │   ├── README.md
+│   │   └── example.py
+│   ├── autogen_multi_agent/
+│   │   ├── README.md
+│   │   └── example.py
+│   └── swarm_coordination/
+│       ├── README.md
+│       └── example.py
+│
+├── tools/
+│   ├── openai_tools/
+│   │   ├── README.md
+│   │   └── example.py
+│   ├── anthropic_tools/
+│   │   ├── README.md
+│   │   └── example.py
+│   └── custom_tool_router/
+│       ├── README.md
+│       └── example.py
+│
+├── integrations/
+│   ├── fastapi_agent/
+│   │   ├── README.md
+│   │   └── main.py
+│   ├── supabase_backend/
+│   │   ├── README.md
+│   │   └── example.py
+│   └── qdrant_vectorstore/
+│       ├── README.md
+│       └── example.py
+│
+└── examples/
+    ├── agent_with_long_term_memory/
+    │   ├── README.md
+    │   └── example.py
+    ├── multi_agent_chat/
+    │   ├── README.md
+    │   └── example.py
+    └── agentic_rag_pipeline/
+        ├── README.md
+        └── example.py
+
+
+---
+
+## 🧠 Featured Patterns (Initial Set)
+
+- Supabase pgvector memory backend  
+- LangGraph state machine workflow  
+- Autogen multi-agent collaboration  
+- Swarms coordination pattern  
+- FastAPI agent endpoint  
+- Tool routing and fallback logic  
+- Long-term semantic memory  
+- Agentic RAG pipeline  
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from everyone!
+
+You can contribute by:
+
+- adding a new pattern  
+- improving an existing example  
+- submitting diagrams  
+- writing documentation  
+- fixing bugs  
+
+See **CONTRIBUTING.md** for details.
+
+---
+
+## ⭐ Goal
+
+To become the **#1 community hub** for agentic AI patterns — helping developers build smarter, more reliable agents.
+
+---
+
+## 📬 Maintainer
+
+**Ablaze**  
+Open-source contributor & agentic AI developer  
+
+
+
 
