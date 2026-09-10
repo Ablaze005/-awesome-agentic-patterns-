@@ -1,0 +1,63 @@
+name: Assign New Contributors When Maintainer Is Inactive
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  assign-new-contributor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign new contributor
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const maintainer = "Ablaze005";
+            const comment = context.payload.comment;
+            const issue = context.payload.issue;
+
+            // Only trigger if comment contains interest to contribute
+            const interestKeywords = ["contribute", "help", "work on this", "assign me"];
+            const isInterested = interestKeywords.some(k => comment.body.toLowerCase().includes(k));
+            if (!isInterested) return;
+
+            // Skip if maintainer already responded
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number
+            });
+
+            const maintainerActive = comments.data.some(c => c.user.login === maintainer);
+            if (maintainerActive) return;
+
+            // Check if commenter is a new contributor
+            const username = comment.user.login;
+
+            const contributions = await github.rest.repos.listContributors({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            const isNewContributor = !contributions.data.some(c => c.login === username);
+
+            if (!isNewContributor) return;
+
+            // Assign issue to new contributor
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              assignees: [username]
+            });
+
+            // Leave onboarding message
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `Welcome @${username}! 🎉  
+You’re now assigned to this issue.  
+Feel free to ask any questions — happy to have you contributing!`
+            });
