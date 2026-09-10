@@ -21,6 +21,8 @@ This repo solves that by providing **simple, well-explained, production-ready pa
 
 ## 📦 Repository Structure
 
+## 📦 Repository Structure
+
 awesome-agentic-patterns/
 │
 ├── memory/
@@ -42,12 +44,18 @@ awesome-agentic-patterns/
 ├── integrations/
 │   ├── fastapi_agent/
 │   ├── supabase_backend/
-│   └── qdrant_vectorstore/
+│   ├── qdrant_vectorstore/
+│   ├── agent_deployment/
+│   │   ├── README.md
+│   │   ├── Dockerfile
+│   │   ├── server.py
+│   │   └── render.yaml
 │
 └── examples/
-├── agent_with_long_term_memory/
-├── multi_agent_chat/
-└── agentic_rag_pipeline/
+    ├── agent_with_long_term_memory/
+    ├── multi_agent_chat/
+    └── agentic_rag_pipeline/
+
 
 
 Each folder includes:
@@ -76,14 +84,17 @@ Each folder includes:
 - Custom tool router with fallback logic  
 
 ### Integrations
-- FastAPI agent endpoint  
-- Supabase backend  
-- Qdrant vector store  
+- FastAPI agent endpoint
+- Docker + Render agent deployment
+- Tool routing and fallback logic
+- Long-term semantic memory
+- Supabase backend
+- Qdrant vector store
 
 ### Examples
-- Long-term memory agent  
-- Multi-agent chat  
-- Agentic RAG pipeline  
+- Long-term memory agent
+- Multi-agent chat
+- Agentic RAG pipeline
 
 ---
 
@@ -140,11 +151,8 @@ Building practical patterns for real-world agent systems.
 ---
 
 ## 📄 License
-
 MIT — free to use, modify, and share.
 
----
-
 ## 🎯 Goal
+To become the #1 community hub for agentic AI patterns — helping developers build smarter, more reliable agents.
 
-To become the **#1 community hub** for agentic AI patterns — helping developers build smarter, more reliable agents.
