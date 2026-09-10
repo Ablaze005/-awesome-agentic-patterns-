@@ -15,7 +15,7 @@ example = ChatGroq(
 )
 
 
-app = FastAPI(title="Agent API",version="0.0.1")
+app = FastAPI(title="Agent API",version="0.0.1" ,summary="This is an Agent Integration Pattern for LangGraph workflow exposed as a REST API")
 
 
 #output schema for the agent
