@@ -20,6 +20,12 @@ FastAPI app
    v
 JSON response
 ```
+## Api endpoints
+```http
+GET    /app/v1/health
+POST   /app/v1/chat
+
+```
 
 ## Setup
 
