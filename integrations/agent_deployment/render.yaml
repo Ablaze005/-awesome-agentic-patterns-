@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: agent-deployment-pattern
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: AGENT_API_KEY
+        sync: false
+      - key: AGENT_MODEL
+        value: demo-model
+      - key: AGENT_CONFIG
+        value: default

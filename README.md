@@ -71,6 +71,11 @@ awesome-agentic-patterns/
 │   ├── fastapi_agent/
 │   │   ├── README.md
 │   │   └── main.py
+│   ├── agent_deployment/
+│   │   ├── README.md
+│   │   ├── Dockerfile
+│   │   ├── server.py
+│   │   └── render.yaml
 │   ├── supabase_backend/
 │   │   ├── README.md
 │   │   └── example.py
@@ -99,6 +104,7 @@ awesome-agentic-patterns/
 - Autogen multi-agent collaboration  
 - Swarms coordination pattern  
 - FastAPI agent endpoint  
+- Docker + Render agent deployment  
 - Tool routing and fallback logic  
 - Long-term semantic memory  
 - Agentic RAG pipeline  
@@ -131,7 +137,6 @@ To become the **#1 community hub** for agentic AI patterns — helping developer
 
 **Ablaze**  
 Open-source contributor & agentic AI developer  
-
 
 
 
