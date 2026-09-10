@@ -1,63 +1,169 @@
-name: Assign New Contributors When Maintainer Is Inactive
+name: Assign New Contributors
 
 on:
   issue_comment:
     types: [created]
 
+# The script reads repository metadata and changes issue assignees/comments.
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   assign-new-contributor:
     runs-on: ubuntu-latest
     steps:
-      - name: Assign new contributor
+      - name: Assign interested new contributor
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const maintainer = "Ablaze005";
+            const { owner, repo } = context.repo;
+            const issueNumber = context.payload.issue.number;
             const comment = context.payload.comment;
-            const issue = context.payload.issue;
+            const commenter = comment.user;
 
-            // Only trigger if comment contains interest to contribute
-            const interestKeywords = ["contribute", "help", "work on this", "assign me"];
-            const isInterested = interestKeywords.some(k => comment.body.toLowerCase().includes(k));
-            if (!isInterested) return;
+            // Keep matching broad enough for natural language, but avoid
+            // assigning people who did not explicitly express interest.
+            const interestKeywords = [
+              "i want to contribute",
+              "i want to help",
+              "assign me",
+              "i can work on this",
+              "i'd like to contribute",
+              "i would like to contribute",
+              "i'd like to help",
+              "i would like to help",
+            ];
 
-            // Skip if maintainer already responded
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number
-            });
+            const commentBody = comment.body.toLowerCase();
+            const isInterested = interestKeywords.some((keyword) =>
+              commentBody.includes(keyword)
+            );
 
-            const maintainerActive = comments.data.some(c => c.user.login === maintainer);
-            if (maintainerActive) return;
+            if (!isInterested) {
+              core.info("Comment does not contain an interest keyword.");
+              return;
+            }
 
-            // Check if commenter is a new contributor
-            const username = comment.user.login;
+            // Bot accounts and the maintainer are never assigned by this bot.
+            if (
+              commenter.type === "Bot" ||
+              commenter.login.endsWith("[bot]") ||
+              commenter.login.toLowerCase() === maintainer.toLowerCase()
+            ) {
+              core.info(`Skipping bot or maintainer account: ${commenter.login}`);
+              return;
+            }
 
-            const contributions = await github.rest.repos.listContributors({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
+            try {
+              // Read every comment so a paginated response cannot hide the
+              // maintainer's earlier activity.
+              const comments = await github.paginate(
+                github.rest.issues.listComments,
+                {
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  per_page: 100,
+                }
+              );
 
-            const isNewContributor = !contributions.data.some(c => c.login === username);
+              const maintainerActive = comments.some(
+                (item) =>
+                  item.user &&
+                  item.user.login.toLowerCase() === maintainer.toLowerCase()
+              );
 
-            if (!isNewContributor) return;
+              if (maintainerActive) {
+                core.info("Maintainer has commented; no assignment made.");
+                return;
+              }
 
-            // Assign issue to new contributor
-            await github.rest.issues.addAssignees({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              assignees: [username]
-            });
+              // The repository contributors endpoint is the GitHub API's
+              // contribution history for this repository. A missing login is
+              // treated as a first-time contributor.
+              const contributors = await github.paginate(
+                github.rest.repos.listContributors,
+                {
+                  owner,
+                  repo,
+                  anon: false,
+                  per_page: 100,
+                }
+              );
 
-            // Leave onboarding message
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              body: `Welcome @${username}! 🎉  
-You’re now assigned to this issue.  
-Feel free to ask any questions — happy to have you contributing!`
-            });
+              const isNewContributor = !contributors.some(
+                (contributor) => contributor.login === commenter.login
+              );
+
+              if (!isNewContributor) {
+                core.info(`${commenter.login} is already a repository contributor.`);
+                return;
+              }
+
+              const issue = await github.rest.issues.get({
+                owner,
+                repo,
+                issue_number: issueNumber,
+              });
+
+              // Avoid duplicate assignment notifications or API calls.
+              const alreadyAssigned = issue.data.assignees.some(
+                (assignee) => assignee.login === commenter.login
+              );
+
+              if (alreadyAssigned) {
+                core.info(`${commenter.login} is already assigned to this issue.`);
+                return;
+              }
+
+              await github.rest.issues.addAssignees({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                assignees: [commenter.login],
+              });
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: [
+                  `Welcome @${commenter.login}! 🎉`,
+                  "",
+                  "Thanks for volunteering. You are now assigned to this issue.",
+                  "Please ask questions here if you need any context or support.",
+                ].join("\n"),
+              });
+
+              core.info(`Assigned ${commenter.login} to issue #${issueNumber}.`);
+            } catch (error) {
+              const message = error instanceof Error ? error.message : String(error);
+              core.error(`Contributor assignment failed: ${message}`);
+
+              // Make a failed assignment visible to the contributor and
+              // maintainers instead of silently failing the workflow.
+              try {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  body: [
+                    `Thanks for volunteering, @${commenter.login}!`,
+                    "",
+                    "I couldn't assign you automatically. A maintainer will assign",
+                    "this issue shortly.",
+                  ].join("\n"),
+                });
+              } catch (fallbackError) {
+                const fallbackMessage =
+                  fallbackError instanceof Error
+                    ? fallbackError.message
+                    : String(fallbackError);
+                core.error(`Fallback comment failed: ${fallbackMessage}`);
+              }
+
+              core.setFailed("The new contributor assignment did not complete.");
+            }
