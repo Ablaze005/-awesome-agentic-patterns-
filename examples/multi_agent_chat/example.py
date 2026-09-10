@@ -1,5 +1,5 @@
 """Simple multi-agent chat simulation using LangGraph and ChatGroq."""
-
+"""future-scope we can integrate it with Deep-agent so the line of code will be reduced"""
 import os
 from typing import TypedDict
 from dotenv import load_dotenv
@@ -10,13 +10,14 @@ from pydantic import BaseModel, Field
 
 load_dotenv()
 
-
+#output pattern for agents
+#TODO : add schema for palnner and write for precise output 
 class ResearchOutput(BaseModel):
     title: str = Field(description="Research topic title")
     summary: str = Field(description="Summary of the key research points")
 
 
-
+#workflow transfer
 class AgentState(TypedDict):
     user_input: str
     plan: str
@@ -45,7 +46,7 @@ def researcher_node(state: AgentState) -> dict:
     #TODO : Insted of self answer we can add a web_search_tool in the researcher
     #from langchain_community.tools import tool
     #create a tool node and add to this function for better output 
-    
+
     prompt = (
         f"Topic: {state['user_input']}\n"
         f"Plan: {state['plan']}\n"
