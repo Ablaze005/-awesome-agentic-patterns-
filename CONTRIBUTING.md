@@ -168,14 +168,6 @@ To maintain quality and consistency across the project:
 - Avoid modifying workflow files unless necessary  
 
 ---
-
-# 🏆 Hall of Fame
-
-The Hall of Fame celebrates everyone who has contributed to this project.  
-Each contributor receives a **Hall of Fame Award Card** added automatically when their PR is merged.
-
----
-
 ## 🏆 Hall of Fame
 Our amazing contributors — displayed as a growing badge wall.
 
@@ -183,26 +175,42 @@ Our amazing contributors — displayed as a growing badge wall.
 
 <table>
   <tr>
-    <!-- Example contributor badge -->
+
+    <!-- Ablaze005 -->
     <td align="center" width="90">
-      <a href="https://github.com/USERNAME">
-        <img src="https://github.com/USERNAME.png" width="60" height="60" style="border-radius:50%;" />
+      <a href="https://github.com/Ablaze005">
+        <img src="https://github.com/Ablaze005.png" width="60" height="60" style="border-radius:50%;" />
         <br />
-        <sub><b>@USERNAME</b></sub>
+        <sub><b>@Ablaze005</b></sub>
       </a>
     </td>
+
+    <!-- BenjaminVijayaraj5102004 -->
+    <td align="center" width="90">
+      <a href="https://github.com/BenjaminVijayaraj5102004">
+        <img src="https://github.com/BenjaminVijayaraj5102004.png" width="60" height="60" style="border-radius:50%;" />
+        <br />
+        <sub><b>@BenjaminVijayaraj5102004</b></sub>
+      </a>
+    </td>
+
+    <!-- adityawaghamare04 -->
+    <td align="center" width="90">
+      <a href="https://github.com/adityawaghamare04">
+        <img src="https://github.com/adityawaghamare04.png" width="60" height="60" style="border-radius:50%;" />
+        <br />
+        <sub><b>@adityawaghamare04</b></sub>
+      </a>
+    </td>
+
   </tr>
 </table>
 
 </div>
 
-<!-- Bot will append new <td> badges inside the <tr> row -->
-
 
 ---
 
 ✨ Want your name here? Submit a PR — we’d love to have you.
 
----
 
-✨ Want your name here? Submit a PR — we’d love to have you.
