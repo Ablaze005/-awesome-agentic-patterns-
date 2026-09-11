@@ -1,0 +1,177 @@
+name: Advanced Security Scan Bot
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Advanced Security Scan
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pr = context.payload.pull_request;
+            const prNumber = pr.number;
+            const author = pr.user.login;
+
+            // Maintainer for escalation logic
+            const maintainer = "Ablaze005";
+
+            // Suspicious command patterns
+            const dangerousPatterns = [
+              /rm\s+-rf\s+\//i,
+              /curl\s+.+\|\s*sh/i,
+              /wget\s+.+\|\s*bash/i,
+              /eval\s*\(/i,
+              /exec\s*\(/i,
+              /chmod\s+777/i,
+              /sudo\s+/i,
+              /GITHUB_TOKEN/i,
+              /secrets\./i,
+              /base64\s+-d/i,
+              /python\s+-c/i,
+              /node\s+-e/i
+            ];
+
+            // Sensitive directories
+            const sensitivePaths = [
+              ".github/workflows/",
+              ".github/actions/",
+              "deploy/",
+              "scripts/",
+              "infra/",
+              "config/",
+              "security/",
+              "agent/",
+              "memory/"
+            ];
+
+            // Suspicious dependency additions
+            const dangerousDependencies = [
+              "child_process",
+              "shelljs",
+              "node-pty",
+              "python-shell",
+              "subprocess",
+              "pexpect"
+            ];
+
+            const files = await github.rest.pulls.listFiles({
+              owner,
+              repo,
+              pull_number: prNumber
+            });
+
+            let warnings = [];
+            let blocked = false;
+
+            for (const file of files.data) {
+              const filename = file.filename;
+
+              // 1. Sensitive path detection
+              if (sensitivePaths.some(path => filename.startsWith(path))) {
+                warnings.push(`🔒 Sensitive file modified: \`${filename}\``);
+                blocked = true;
+              }
+
+              // 2. Workflow modification detection
+              if (filename.startsWith(".github/workflows/")) {
+                warnings.push(`⚠️ Workflow file changed: \`${filename}\`. This requires manual maintainer review.`);
+                blocked = true;
+              }
+
+              // 3. Dependency risk detection
+              if (filename.includes("package.json") && file.patch) {
+                dangerousDependencies.forEach(dep => {
+                  if (file.patch.includes(dep)) {
+                    warnings.push(`🚨 Dangerous dependency added: \`${dep}\``);
+                    blocked = true;
+                  }
+                });
+              }
+
+              // 4. Patch scanning for dangerous commands
+              if (file.patch) {
+                dangerousPatterns.forEach(pattern => {
+                  if (pattern.test(file.patch)) {
+                    warnings.push(`🚨 Suspicious code detected in \`${filename}\`: \`${pattern}\``);
+                    blocked = true;
+                  }
+                });
+              }
+            }
+
+            // 5. Fork PR detection
+            const isFromFork = pr.head.repo.full_name !== `${owner}/${repo}`;
+            if (isFromFork) {
+              warnings.push("🔒 PR originates from a fork. Auto-merge disabled for security.");
+              blocked = true;
+            }
+
+            // 6. Maintainer activity check
+            const comments = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number: prNumber
+            });
+
+            const maintainerActive = comments.data.some(
+              c => c.user.login === maintainer
+            );
+
+            if (!maintainerActive && blocked) {
+              warnings.push("🛑 Maintainer inactive. Risky PR cannot proceed without manual approval.");
+            }
+
+            // 7. Final reporting
+            if (warnings.length === 0) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: "✅ **Security Scan Bot:** No suspicious changes detected. PR is safe."
+              });
+
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: prNumber,
+                labels: ["security-clear"]
+              });
+
+              return;
+            }
+
+            const report = [
+              "🔐 **Advanced Security Scan Report**",
+              "",
+              ...warnings,
+              "",
+              blocked
+                ? "❌ **Result:** PR flagged as HIGH RISK. Auto-merge disabled."
+                : "⚠️ **Result:** PR contains sensitive changes. Manual review required."
+            ].join("\n");
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: report
+            });
+
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: prNumber,
+              labels: blocked ? ["security-risk"] : ["security-review"]
+            });
