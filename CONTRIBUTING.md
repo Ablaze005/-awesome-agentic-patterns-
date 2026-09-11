@@ -93,8 +93,8 @@ Every month, the contributor with the most impactful PRs is highlighted here.
 
 ---
 
-## 🧱 Scrollable Hall of Fame Badge Wall  
-This section automatically grows as more contributors join.  
+## 🧱 Scrollable Hall of Fame Badge Wall
+This section automatically grows as more contributors join.
 It is compact, scrollable, and visually clean.
 
 <div align="center">
@@ -104,7 +104,7 @@ It is compact, scrollable, and visually clean.
 <table>
   <tr>
 
-    <!-- Gold Tier -->
+    <!-- 🥇 Gold Tier -->
     <td align="center" width="90">
       🥇  
       <a href="https://github.com/Ablaze005">
@@ -114,7 +114,7 @@ It is compact, scrollable, and visually clean.
       </a>
     </td>
 
-    <!-- Silver Tier -->
+    <!-- 🥈 Silver Tier -->
     <td align="center" width="90">
       🥈  
       <a href="https://github.com/BenjaminVijayaraj5102004">
@@ -124,7 +124,7 @@ It is compact, scrollable, and visually clean.
       </a>
     </td>
 
-    <!-- Bronze Tier -->
+    <!-- 🥉 Bronze Tier -->
     <td align="center" width="90">
       🥉  
       <a href="https://github.com/adityawaghamare04">
