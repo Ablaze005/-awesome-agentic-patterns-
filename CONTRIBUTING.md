@@ -91,15 +91,11 @@ Every month, the contributor with the most impactful PRs is highlighted here.
 @Ablaze005 — For outstanding contributions, improvements, and leadership.
 
 
----
-
 ## 🧱 Scrollable Hall of Fame Badge Wall
 This section automatically grows as more contributors join.
 It is compact, scrollable, and visually clean.
 
 <div align="center">
-
-<div style="overflow-x: auto; white-space: nowrap; padding: 10px;">
 
 <table>
   <tr>
@@ -139,9 +135,6 @@ It is compact, scrollable, and visually clean.
 
 </div>
 
-</div>
-
----
 
 ## 📊 Leaderboard (All‑Time)
 
