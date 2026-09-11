@@ -16,3 +16,17 @@ We welcome contributions from developers of all skill levels.
 4. Submit a PR  
 
 We will review PRs weekly.  
+---
+## ⭐ Contributors
+
+Thanks to these amazing people:
+
+| Contributor | Role |
+|------------|------|
+| **Ablaze005** | Maintainer |
+| **BenjaminVijayaraj5102004** | Contributor |
+| **adityawaghamare04** | Contributor |
+
+Want your name here?  
+Submit a PR — we’d love to have you.
+---
