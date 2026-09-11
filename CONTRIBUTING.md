@@ -178,7 +178,7 @@ Our amazing contributors — displayed as a growing badge wall.
     <!-- Ablaze005 -->
     <td align="center" width="90">
       <a href="https://github.com/Ablaze005">
-        <img src="https://github.com/Ablaze005.png" width="60" height="60" style="border-radius:50%;" />
+        <img src="https://github.com/Ablaze005.png" width="60" height="60">
         <br />
         <sub><b>@Ablaze005</b></sub>
       </a>
@@ -187,7 +187,7 @@ Our amazing contributors — displayed as a growing badge wall.
     <!-- BenjaminVijayaraj5102004 -->
     <td align="center" width="90">
       <a href="https://github.com/BenjaminVijayaraj5102004">
-        <img src="https://github.com/BenjaminVijayaraj5102004.png" width="60" height="60" style="border-radius:50%;" />
+        <img src="https://github.com/BenjaminVijayaraj5102004.png" width="60" height="60">
         <br />
         <sub><b>@BenjaminVijayaraj5102004</b></sub>
       </a>
@@ -196,7 +196,7 @@ Our amazing contributors — displayed as a growing badge wall.
     <!-- adityawaghamare04 -->
     <td align="center" width="90">
       <a href="https://github.com/adityawaghamare04">
-        <img src="https://github.com/adityawaghamare04.png" width="60" height="60" style="border-radius:50%;" />
+        <img src="https://github.com/adityawaghamare04.png" width="60" height="60">
         <br />
         <sub><b>@adityawaghamare04</b></sub>
       </a>
