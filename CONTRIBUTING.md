@@ -87,3 +87,70 @@ This Hall of Fame is designed to scale beautifully as more contributors join.
 ## 🎖️ Monthly Top Contributor Award  
 Every month, the contributor with the most impactful PRs is highlighted here.
 
+🌟 Top Contributor of the Month (September 2026)  
+@Ablaze005 — For outstanding contributions, improvements, and leadership.
+
+
+---
+
+## 🧱 Scrollable Hall of Fame Badge Wall  
+This section automatically grows as more contributors join.  
+It is compact, scrollable, and visually clean.
+
+<div align="center">
+
+<div style="overflow-x: auto; white-space: nowrap; padding: 10px;">
+
+<table>
+  <tr>
+
+    <!-- Gold Tier -->
+    <td align="center" width="90">
+      🥇  
+      <a href="https://github.com/Ablaze005">
+        <img src="https://github.com/Ablaze005.png" width="60" height="60">
+        <br />
+        <sub><b>@Ablaze005</b></sub>
+      </a>
+    </td>
+
+    <!-- Silver Tier -->
+    <td align="center" width="90">
+      🥈  
+      <a href="https://github.com/BenjaminVijayaraj5102004">
+        <img src="https://github.com/BenjaminVijayaraj5102004.png" width="60" height="60">
+        <br />
+        <sub><b>@BenjaminVijayaraj5102004</b></sub>
+      </a>
+    </td>
+
+    <!-- Bronze Tier -->
+    <td align="center" width="90">
+      🥉  
+      <a href="https://github.com/adityawaghamare04">
+        <img src="https://github.com/adityawaghamare04.png" width="60" height="60">
+        <br />
+        <sub><b>@adityawaghamare04</b></sub>
+      </a>
+    </td>
+
+  </tr>
+</table>
+
+</div>
+
+</div>
+
+---
+
+## 📊 Leaderboard (All‑Time)
+
+| Rank | Contributor | Contributions |
+|------|-------------|---------------|
+| 🥇 1 | **@Ablaze005** | 10+ |
+| 🥈 2 | **@BenjaminVijayaraj5102004** | 3 |
+| 🥉 3 | **@adityawaghamare04** | 1 |
+
+---
+
+✨ Want your name here? Submit a PR — we’d love to have you.
