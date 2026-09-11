@@ -109,36 +109,6 @@ Help us grow the ecosystem — here’s what’s coming next:
 - [ ] Add deployment templates (Docker, Railway, Fly.io)  
 - [ ] Add agent evaluation & testing patterns  
 
----
-
-## 🤝 Contributing
-
-We welcome contributions from everyone — beginners to advanced agent developers.
-
-You can contribute by:
-- Adding a new pattern  
-- Improving an existing example  
-- Submitting diagrams  
-- Writing documentation  
-- Fixing bugs  
-- Suggesting new workflows  
-
-See **CONTRIBUTING.md** for full guidelines.
-
----
-
-## ⭐ Contributors
-
-Thanks to these amazing people:
-
-| Contributor | Role |
-|------------|------|
-| **Ablaze005** | Maintainer |
-| **BenjaminVijayaraj5102004** | Contributor |
-| **adityawaghamare04** | Contributor |
-
-Want your name here?  
-Submit a PR — we’d love to have you.
 
 ---
 
