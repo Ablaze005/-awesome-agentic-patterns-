@@ -1,36 +1,93 @@
-# LangGraph State Machine Pattern
+# LangGraph State Machine Workflow
 
-A state machine is a structured way to guide an agent through a predictable workflow. LangGraph helps model each step as a state transition, keeping the logic clear and easy to debug.
+A state machine is one of the cleanest ways to structure agent logic.  
+This pattern shows how to build a simple **input → process → output** workflow using LangGraph.
 
-## Why This Pattern Matters
+---
 
-Many agent workflows fail because they become unstructured and hard to control. A state machine forces explicit phases such as input, validation, reasoning, tool use, and final response. This reduces failure modes and improves reliability.
+## 🧠 What Are State Machines?
 
-## Architecture Overview
+A **state machine** is a computational model where an agent moves through a series of **states**, and each state determines what happens next.
 
-```text
-START -> INPUT -> VALIDATE -> PLAN -> ACT -> RESPOND -> END
+A state machine always includes:
+
+- **States** — named steps in the workflow  
+- **Transitions** — rules that determine the next state  
+- **Terminal states** — where the workflow ends  
+
+State machines make agent behavior predictable and easy to debug.
+
+---
+
+## 🤖 Why State Machines Are Useful for Agents
+
+AI agents often need structured reasoning:
+
+- Validate or interpret user input  
+- Process data step-by-step  
+- Make decisions based on conditions  
+- Produce final output  
+
+Using a state machine ensures the agent follows a **deterministic**, **testable**, and **safe** workflow — especially when calling tools or APIs.
+
+---
+
+## 🔁 Workflow Diagram
+
+```
+                ┌──────────────────────────┐
+                │        INPUT STATE       │
+                │  Collect user request    │
+                └────────────┬─────────────┘
+                             │
+                             ▼
+                ┌──────────────────────────┐
+                │       PROCESS STATE      │
+                │  Validate + transform    │
+                └────────────┬─────────────┘
+                             │
+                             ▼
+                ┌──────────────────────────┐
+                │       OUTPUT STATE       │
+                │  Return final result     │
+                └──────────────────────────┘
 ```
 
-Each node can check state, run logic, and route the workflow to the next step.
+This is the simplest useful pattern:  
+**input → process → output**
 
-## Setup
+---
 
-```bash
-pip install langgraph
+## 📂 Files in This Folder
+
+```
+workflows/langgraph_state_machine/
+│
+├── README.md
+└── example.py
 ```
 
-## How to Run
+---
 
-```bash
-python example.py
-```
+## 🐍 Example Code
 
-## Example Flow
+See `example.py` for a complete LangGraph implementation with:
 
-The example below simulates a simple triage workflow for an assistant.
+- Three states  
+- Transitions  
+- Comments explaining each part  
+- A runnable workflow  
 
-- The agent receives a request.
-- It checks the question type.
-- It chooses the next state.
-- It produces a response.
+---
+
+## 🚀 Summary
+
+This pattern provides a clean foundation for building:
+
+- Tool-calling agents  
+- Multi-step reasoning workflows  
+- Conditional branching logic  
+- Multi-agent pipelines  
+
+Use this as a starting point for more advanced LangGraph workflows.
+
