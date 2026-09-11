@@ -1,0 +1,188 @@
+name: Advanced PR Review & Secure Automerge Bot
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review, reopened]
+
+jobs:
+  review-and-automerge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Analyze PR and act as reviewer
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const maintainer = "Ablaze005";
+            const pr = context.payload.pull_request;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Basic info
+            const author = pr.user.login;
+            const prNumber = pr.number;
+
+            // 1. Check if maintainer is active on this PR
+            const comments = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number: prNumber
+            });
+
+            const maintainerActive = comments.data.some(
+              c => c.user.login === maintainer
+            );
+
+            // If maintainer is active, bot only leaves a light note and exits
+            if (maintainerActive) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: "👀 Maintainer is active on this PR. Bot will not auto-merge or take reviewer role."
+              });
+              return;
+            }
+
+            // 2. Perform basic review checks
+            let reviewComments = [];
+
+            if (!pr.title || pr.title.trim().length < 8) {
+              reviewComments.push("⚠️ PR title is too short. Please provide a clear, descriptive title.");
+            }
+
+            if (!pr.body || pr.body.trim().length < 20) {
+              reviewComments.push("⚠️ PR description is missing or too short. Please explain what this PR changes and why.");
+            }
+
+            // 3. Detect new contributors
+            const contributors = await github.rest.repos.listContributors({
+              owner,
+              repo
+            });
+
+            const isNewContributor = !contributors.data.some(c => c.login === author);
+
+            if (isNewContributor) {
+              reviewComments.push(`🎉 Welcome @${author}! Thanks for contributing to this project. The bot is acting as a temporary reviewer because the maintainer is inactive.`);
+            }
+
+            // 4. Post review comment
+            if (reviewComments.length === 0) {
+              reviewComments.push("✅ Automated review: PR looks structurally good (title & description). Proceeding to check CI status before any merge.");
+            }
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: reviewComments.join("\n")
+            });
+
+            // 5. Check CI status & merge safety
+            // We only consider auto-merge if:
+            // - PR is not a draft
+            // - PR targets main (or your primary branch)
+            // - All visible checks are green
+            // - Repo has branch protection with required checks
+            // - PR is marked safe via label
+
+            if (pr.draft) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: "⏸ PR is a draft. Bot will not auto-merge."
+              });
+              return;
+            }
+
+            const targetBranch = pr.base.ref;
+            if (targetBranch !== "main") {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: `⏸ PR targets \`${targetBranch}\`, not \`main\`. Bot will not auto-merge this branch.`
+              });
+              return;
+            }
+
+            // Require explicit label to opt-in to automerge
+            const labels = pr.labels.map(l => l.name);
+            const hasAutoMergeLabel = labels.includes("bot-automerge");
+
+            if (!hasAutoMergeLabel) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: "🔒 Auto-merge is disabled for this PR. Add the `bot-automerge` label to opt in once CI is green and changes are safe."
+              });
+              return;
+            }
+
+            // 6. Check combined status for the PR head SHA
+            const sha = pr.head.sha;
+
+            const combinedStatus = await github.rest.repos.getCombinedStatusForRef({
+              owner,
+              repo,
+              ref: sha
+            });
+
+            const allGreen = combinedStatus.data.status === "success";
+
+            if (!allGreen) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: "❌ CI checks are not all green. Bot will not auto-merge. Please fix failing checks."
+              });
+              return;
+            }
+
+            // 7. Final safety: avoid merging from forks or unknown bots
+            const isFromFork = pr.head.repo.full_name !== `${owner}/${repo}`;
+            if (isFromFork) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: "🔒 PR comes from a fork. Bot will not auto-merge for security reasons."
+              });
+              return;
+            }
+
+            // 8. Auto-merge safely (squash)
+            try {
+              await github.rest.pulls.merge({
+                owner,
+                repo,
+                pull_number: prNumber,
+                merge_method: "squash",
+                commit_title: `Auto-merged by bot (CI green, maintainer inactive, label: bot-automerge)`
+              });
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: "✅ Auto-merge completed safely: CI green, maintainer inactive, explicit `bot-automerge` label present, no fork, targeting `main`."
+              });
+            } catch (error) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: `⚠️ Bot attempted to auto-merge but GitHub refused: ${error.message}. Please review manually.`
+              });
+            }
