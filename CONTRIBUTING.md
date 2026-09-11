@@ -1,6 +1,6 @@
 # Contributing to Awesome Agentic Patterns
 
-Thank you for your interest in contributing to **Awesome Agentic Patterns** — a curated collection of AI agent design patterns, workflow templates, memory architectures, and integration examples for modern agent frameworks such as LangGraph, Autogen, Swarms, FastAPI, Supabase, pgvector, and more.
+Thank you for your interest in contributing to **Awesome Agentic Patterns** — a curated collection of AI agent design patterns, memory architectures, workflow templates, and integration examples for modern agent frameworks such as LangGraph, Autogen, Swarms, Supabase, pgvector, FastAPI, and more.
 
 We welcome contributions from developers of all experience levels. Whether you're fixing a typo, adding a new workflow, or proposing a new agent pattern, your contribution helps strengthen the ecosystem.
 
@@ -102,20 +102,6 @@ Each pattern should include:
 - Do not expose secrets or tokens  
 - Avoid modifying workflow files unless necessary  
 - Ensure examples are safe and reproducible
-
----
-
-## 🏆 Hall of Fame
-
-Every contributor who submits a merged PR will be added to the **Hall of Fame** section in the repository.
-
-We celebrate contributors with:
-- Profile image  
-- GitHub username  
-- Contribution details  
-- Date of merge  
-
-Your work matters — and we want to highlight it.
 
 ---
 
