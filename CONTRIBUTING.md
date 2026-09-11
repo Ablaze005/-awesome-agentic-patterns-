@@ -167,7 +167,6 @@ To maintain quality and consistency across the project:
 - Do not expose secrets or tokens  
 - Avoid modifying workflow files unless necessary  
 
----
 ## 🏆 Hall of Fame
 Our amazing contributors — displayed as a growing badge wall.
 
@@ -208,8 +207,6 @@ Our amazing contributors — displayed as a growing badge wall.
 
 </div>
 
-
----
 
 ✨ Want your name here? Submit a PR — we’d love to have you.
 
