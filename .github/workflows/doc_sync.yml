@@ -5,12 +5,18 @@ on:
     - cron: "15 */4 * * *"   # runs every 4 hours
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   sync-docs:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Sync documentation
         uses: actions/checkout@v4
 
       - name: Sync documentation
@@ -24,13 +30,26 @@ jobs:
             const patternsDir = "./patterns";
             const docsDir = "./docs/patterns";
 
-            if (!fs.existsSync(patternsDir)) return;
+            if (!fs.existsSync(patternsDir)) {
+              core.info("No patterns directory found; nothing to sync.");
+              return;
+            }
 
+            fs.mkdirSync(docsDir, { recursive: true });
             const patterns = fs.readdirSync(patternsDir);
 
             patterns.forEach(file => {
               const docFile = path.join(docsDir, file.replace(".md", ".doc.md"));
               if (!fs.existsSync(docFile)) {
-                fs.writeFileSync(docFile, `# Documentation for ${file}\n\nAuto-generated doc placeholder.`);
+                fs.writeFileSync(
+                  docFile,
+                  `# Documentation for ${file}\n\nAuto-generated doc placeholder.\n`
+                );
               }
             });
+
+      - name: Commit documentation changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Sync generated pattern documentation"
+          file_pattern: docs/patterns

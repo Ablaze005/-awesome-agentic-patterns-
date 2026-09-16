@@ -1,0 +1,24 @@
+name: Auto Close Stale Issues
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # runs daily at 03:00
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Close stale issues
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 7
+          days-before-close: 3
+          stale-issue-message: "This issue has gone stale due to inactivity."
+          close-issue-message: "Closing this stale issue automatically."
+          stale-issue-label: "stale"
