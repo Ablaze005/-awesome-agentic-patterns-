@@ -1,0 +1,44 @@
+name: Auto Label Issues
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  label-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Apply labels based on content
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = (issue.body || "").toLowerCase();
+
+            const labels = [];
+
+            if (title.includes("pattern") || body.includes("pattern")) {
+              labels.push("agentic-pattern");
+            }
+            if (body.includes("improve") || body.includes("refactor")) {
+              labels.push("enhancement");
+            }
+            if (body.includes("example") || body.includes("demo")) {
+              labels.push("documentation");
+            }
+            if (labels.length === 0) {
+              labels.push("auto-generated");
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels
+            });
