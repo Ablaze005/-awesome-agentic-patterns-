@@ -1,0 +1,36 @@
+name: Documentation Sync
+
+on:
+  schedule:
+    - cron: "15 */4 * * *"   # runs every 4 hours
+  workflow_dispatch:
+
+jobs:
+  sync-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Sync documentation
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require("fs");
+            const path = require("path");
+
+            const patternsDir = "./patterns";
+            const docsDir = "./docs/patterns";
+
+            if (!fs.existsSync(patternsDir)) return;
+
+            const patterns = fs.readdirSync(patternsDir);
+
+            patterns.forEach(file => {
+              const docFile = path.join(docsDir, file.replace(".md", ".doc.md"));
+              if (!fs.existsSync(docFile)) {
+                fs.writeFileSync(docFile, `# Documentation for ${file}\n\nAuto-generated doc placeholder.`);
+              }
+            });
