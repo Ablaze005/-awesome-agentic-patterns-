@@ -5,6 +5,10 @@ on:
     - cron: "0 */2 * * *"   # runs every 2 hours
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   generate-issues:
     runs-on: ubuntu-latest
@@ -20,11 +24,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests
+          python -m pip install --disable-pip-version-check requests
 
       - name: Run issue generator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           python agent_issue_generator.py
