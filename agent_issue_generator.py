@@ -1,12 +1,16 @@
 import json
 import os
 from typing import Any
-
 import requests
 
+# API endpoints
 GITHUB_API = "https://api.github.com"
 GROQ_API = "https://api.groq.com/openai/v1/chat/completions"
+
+# Groq model
 MODEL = "llama-3.1-8b-versatile"
+
+# Settings
 ISSUE_COUNT = 3
 TIMEOUT = (10, 60)
 
@@ -34,9 +38,7 @@ def github_headers() -> dict[str, str]:
     }
 
 
-def github_request(
-    method: str, path: str, **kwargs: Any
-) -> requests.Response:
+def github_request(method: str, path: str, **kwargs: Any) -> requests.Response:
     response = requests.request(
         method,
         f"{GITHUB_API}{path}",
@@ -51,10 +53,7 @@ def github_request(
 def get_repo_context() -> str:
     owner, name = repository_parts()
 
-    repository = github_request(
-        "GET",
-        f"/repos/{owner}/{name}",
-    ).json()
+    repository = github_request("GET", f"/repos/{owner}/{name}").json()
 
     tree = github_request(
         "GET",
@@ -97,7 +96,7 @@ def generate_issues(context: str) -> list[dict[str, str]]:
         "You generate actionable GitHub issues for an agentic-patterns repository. "
         "Return only valid JSON. The top-level value must be an object with an "
         "'issues' array containing exactly three objects. Each object must contain "
-        "only string fields named 'title' and 'body'. Do not use Markdown fences."
+        "only string fields named 'title' and 'body'."
     )
 
     user_prompt = (
@@ -119,8 +118,7 @@ def generate_issues(context: str) -> list[dict[str, str]]:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            "temperature": 0.2,
-            "response_format": {"type": "json_object"},
+            "temperature": 0.2
         },
         timeout=TIMEOUT,
     )
@@ -131,7 +129,7 @@ def generate_issues(context: str) -> list[dict[str, str]]:
         result = response.json()
         content = result["choices"][0]["message"]["content"]
         parsed = json.loads(content)
-    except (KeyError, IndexError, TypeError, json.JSONDecodeError) as error:
+    except Exception as error:
         raise RuntimeError("Groq returned an invalid JSON completion") from error
 
     issues = parsed.get("issues") if isinstance(parsed, dict) else None
@@ -185,7 +183,6 @@ def main() -> None:
     issues = generate_issues(context)
 
     print("Creating GitHub issues...")
-
     for number, issue in enumerate(issues, start=1):
         url = create_issue(issue)
         print(f"Created issue {number}/{ISSUE_COUNT}: {url}")
