@@ -34,23 +34,20 @@ Using a state machine ensures the agent follows a **deterministic**, **testable*
 
 ## 🔁 Workflow Diagram
 
-```
-                ┌──────────────────────────┐
-                │        INPUT STATE       │
-                │  Collect user request    │
-                └────────────┬─────────────┘
-                             │
-                             ▼
-                ┌──────────────────────────┐
-                │       PROCESS STATE      │
-                │  Validate + transform    │
-                └────────────┬─────────────┘
-                             │
-                             ▼
-                ┌──────────────────────────┐
-                │       OUTPUT STATE       │
-                │  Return final result     │
-                └──────────────────────────┘
+LangGraph moves through three nodes in a fixed order. Transitions are unconditional edges; each node applies its own conditional logic to the shared `WorkflowState`.
+
+```mermaid
+flowchart TD
+    ENTRY((Entry Point)) --> input_state
+
+    input_state["input_state<br/>Collect user request<br/>if no user_input → set error"]
+    process_state["process_state<br/>Validate + transform<br/>if error → skip; else uppercase"]
+    output_state["output_state<br/>Return final result<br/>if error → None; else result"]
+    END_NODE((END))
+
+    input_state --> process_state
+    process_state --> output_state
+    output_state --> END_NODE
 ```
 
 This is the simplest useful pattern:  
