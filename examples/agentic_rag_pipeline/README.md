@@ -8,20 +8,15 @@ This approach reduces hallucinations and improves accuracy by grounding response
 
 ## Architecture Overview
 
-```text
-Question
-  |
-  v
-Retriever
-  |
-  +--> search documents
-  |
-  v
-Context injection
-  |
-  v
-LLM response
+```mermaid
+flowchart LR
+    Query --> Agent
+    Agent --> Retriever
+    Retriever --> Memory
+    Memory --> Response
 ```
+
+The user sends a **query**, which the **agent** receives and routes to a **retriever**. The retriever searches a **memory** store (documents, embeddings, or a vector database) for relevant context, then the agent uses that context to produce a grounded **response**.
 
 ## Setup
 
